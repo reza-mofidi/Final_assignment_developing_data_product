@@ -1,0 +1,134 @@
+---
+title: "Diamonds are Forever"
+author: "R Mofidi"
+date: "20/07/2020"
+output: ioslides_presentation
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(plotly)
+library(tidyverse)
+data("diamonds")
+diamonds[1:7]
+```
+
+## Diamonds
+
+- Most valuable of Precious Stones
+- Valuable assets which increase in Price
+- Providence is important
+- Diamonds have characteristics such as Size, cut, colour and clarity
+
+#### **Diamond Prices** 
+
+- Are based on the above characteristics
+- As well as the Providence of the diamond
+- Recorded during the process of certification 
+- Re certification: Diamond exchange 
+- Considerable cost
+
+## Tidyverse Diamond Data set
+
+Is a large data set of over 50,000 diamonds which is available from  the Tidyverse package. 
+It provides 7 variables on 53940 cut diamonds in the US market:
+
+```{r, echo=FALSE}
+diamonds[1:7]
+head(diamonds,5)
+```
+
+Further information is available from: "ggplot2.tidyverse.org/diamonds.html"
+
+## Diamond Price calculations:
+
+- Involve analysis of a multi-dimensional data space 
+- Which can be confusing and difficult to interpret
+
+```{r echo=FALSE}
+plot_ly(x=diamonds$carat, y=diamonds$depth, z=diamonds$price, type="scatter3d", mode="markers", color = diamonds$cut)
+```
+
+## Diamonds are forever "Shiny app"
+Our product allows you to price your diamonds in the comfort and safety of your home and have a guide price in order to be able to negotiate a sale. 
+
+
+Diamonds above US$ 20,000 will will require in person valuation which can be arranged by appointment. Such stones are often traded at auction or in a diamond exchange and are not traded privately
+
+
+You can preview the Shiny app in the next slide and access it on:
+https://reza-mofidi.shinyapps.io/diamonds/ 
+
+## The "shinyApp" (Pun intended)
+
+```{r, echo = FALSE}
+library(shiny)
+
+ui <- fluidPage(
+
+    titlePanel("Price My Diamond Dot com "),
+    
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("slidercarat", "What is the weight of the diamond in carats?", 0.55, 4.5, value = 1.1),
+            selectInput("cut", "What is the cut?", levels(diamonds$cut)), 
+            selectInput("color", "What is the color?", levels(diamonds$color)), 
+            selectInput("clarity", "What is the clarity?", levels(diamonds$clarity)), 
+        ),
+        mainPanel(
+            plotOutput("plot1"),
+            h4("Predicted Price ($):"),
+            h4(textOutput("pred1"))
+        )
+    )
+)
+
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+        
+        model1<- lm(price~0+carat+cut, data = diamonds)
+        model2<- lm(price~0+carat, data = diamonds)
+        model1pred <- reactive({
+            caratInput<- input$slidercarat
+            depthInput<- input$sliderDepth
+            tableInput<- input$sliderTable
+            cutInput<- input$cut
+            colorInput<- input$color
+            clarityInput<- input$clarity
+            
+            predict(model1, newdata=data.frame(carat=caratInput, cut=cutInput, color=colorInput, clarity=clarityInput
+            ))
+            
+        })
+        
+        output$plot1 <- renderPlot({
+            caratInput <- input$slidercarat
+            
+            plot1<- plot(diamonds$carat, diamonds$price, col=diamonds$cut, xlab = "Size in Carat", 
+                         ylab = "Price ($)", bty = "n", pch = 16,
+                         xlim = c(0.2, 5.01), ylim = c(300, 30000))
+            abline(model2, col="blue", cex=1.2)
+            points(caratInput, model1pred(), col = "red", pch = 16, cex = 2)
+        })
+        output$plot2 <- renderPlot({    
+            plot2 <- plot_ly(diamonds, x=diamonds$carat, y=diamonds$depth,
+                             z=diamonds$price, color = diamonds$cut, type = "scatter3d")
+        })
+        output$pred1 <- renderText({
+            model1pred()
+        })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+
+```
+
+

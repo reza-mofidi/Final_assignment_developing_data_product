@@ -1,0 +1,12 @@
+name: dsim
+title: dsim
+username:
+account: reza-mofidi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2592787
+bundleId: 3412323
+url: https://reza-mofidi.shinyapps.io/dsim/
+when: 1595253823.09465
+asMultiple: FALSE
+asStatic: FALSE

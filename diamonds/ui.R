@@ -2,11 +2,11 @@ library(shiny)
 library(tidyverse)
 library(plotly)
 data(diamonds)
-diamonds <- diamonds[1:8]
+diamonds <- diamonds[1:7]
 shinyUI(fluidPage(
     
     # Application title
-    titlePanel("Price any Diamond Dot com "),
+    titlePanel("Diamonds Are Forever! "),
     
     sidebarLayout(
         sidebarPanel(

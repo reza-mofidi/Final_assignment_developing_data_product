@@ -1,0 +1,12 @@
+name: diamonds
+title: diamonds
+username:
+account: reza-mofidi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2592803
+bundleId: 3412381
+url: https://reza-mofidi.shinyapps.io/diamonds/
+when: 1595254622.58049
+asMultiple: FALSE
+asStatic: FALSE
